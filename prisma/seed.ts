@@ -1,34 +1,30 @@
-// prisma/seed.ts
-import { PrismaClient } from "@prisma/client/extension";
-const prisma = new PrismaClient()
+import { PrismaClient } from "../app/generated/prisma/client";
+const prisma = new PrismaClient();
 
 async function main() {
-  // Replace this with a real Stack Auth user ID
   const demoUserId = "2add79b4-7279-4425-a979-eaa59f7bf642";
 
-  // Generate 25 demo products
-  const products = Array.from({ length: 25 }).map((_, i) => ({
-    userId: demoUserId,
-    name: `Product ${i + 1}`,
-    sku: `SKU-${i + 1}`,                 // unique SKU
-    price: (Math.random() * 90 + 10).toFixed(2), // Prisma converts string → Decimal
-    quantity: Math.floor(Math.random() * 20),
-    lowStockAt: 5,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * (i * 5)), // optional: spread creation dates
-  }));
+  // Create sample products
+  await prisma.product.createMany({
+    data: Array.from({ length: 25 }).map((_, i) => ({
+      userId: demoUserId,
+      name: `Product ${i + 1}`,
+      price: (Math.random() * 90 + 10).toFixed(2),
+      quantity: Math.floor(Math.random() * 20),
+      lowStockAt: 5,
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * (i * 5)),
+    })),
+  });
 
-  await prisma.product.createMany({ data: products });
-
-  console.log("✅ Seed data created successfully!");
-  console.log("✅ 25 products created for user:", demoUserId);
+  console.log("✅Seed data created successfully!");
+  console.log(`✅Created 25 products for user ID: ${demoUserId}`);
 }
 
 main()
-  .catch((err) => {
-    console.error("❌ Error during seed:", err);
+  .catch((e) => {
+    console.error(e);
     process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
   });
- 
