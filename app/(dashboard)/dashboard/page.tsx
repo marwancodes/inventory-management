@@ -1,7 +1,6 @@
 "use server";
 
 import ProductsChart from "@/components/products-chart";
-import Sidebar from "@/components/sidebar";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { TrendingUp } from "lucide-react";

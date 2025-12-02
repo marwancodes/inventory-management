@@ -44,7 +44,7 @@ const InventoryPage = async ({searchParams}: {searchParams: Promise<{q? : string
     <div className="min-h-screen bg-gray-50 text-black">
 
         <main className=" p-8">
-            {/* Title */}
+            {/* Header */}
             <div className="mb-8">
                 <div className="flex items-center justify-between">
                     <div>
