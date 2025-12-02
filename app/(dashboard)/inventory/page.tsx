@@ -1,5 +1,4 @@
 import Pagination from "@/components/pagination";
-import Sidebar from "@/components/sidebar";
 import deleteProduct from "@/lib/actions/products";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -43,8 +42,8 @@ const InventoryPage = async ({searchParams}: {searchParams: Promise<{q? : string
 
   return (
     <div className="min-h-screen bg-gray-50 text-black">
-        <Sidebar currentPath="/inventory" />
-        <main className="ml-64 p-8">
+
+        <main className=" p-8">
             {/* Title */}
             <div className="mb-8">
                 <div className="flex items-center justify-between">

@@ -85,7 +85,7 @@ export default function Pagination({
             href={getPageUrl(pageNumber)}
             className={`px-3 py-2 text-sm font-medium rounded-lg ${
               isCurrentPage
-                ? "bg-purple-600 text-white"
+                ? "bg-indigo-600 text-white"
                 : "text-gray-700 hover:bg-gray-100 bg-white border border-gray-300"
             }`}
           >
