@@ -1,3 +1,4 @@
+import Pagination from "@/components/pagination";
 import Sidebar from "@/components/sidebar";
 import deleteProduct from "@/lib/actions/products";
 import { getCurrentUser } from "@/lib/auth";
@@ -5,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 
 
 
-const InventoryPage = async ({searchParams}: {searchParams: Promise<{q? : string}>}) => {
+const InventoryPage = async ({searchParams}: {searchParams: Promise<{q? : string; page?: string}>}) => {
 
     const user = await getCurrentUser();
     const userId = user.id;
@@ -13,7 +14,8 @@ const InventoryPage = async ({searchParams}: {searchParams: Promise<{q? : string
     // Get search query
     const params = await searchParams;
     const q = (params.q ?? "").trim();
-
+    const page = Math.max(1, Number(params.page ?? 1));
+    const pageSize = 5;
 
     const where = {
         userId,
@@ -31,10 +33,12 @@ const InventoryPage = async ({searchParams}: {searchParams: Promise<{q? : string
         prisma.product.count({where}),
         prisma.product.findMany({
             where,
+            orderBy: { createdAt: "desc" },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
         }),
     ]);
 
-    const pageSize = 10;
     const totalPages = Math.max(1, Math.ceil(totalCount/pageSize))
 
   return (
@@ -100,7 +104,20 @@ const InventoryPage = async ({searchParams}: {searchParams: Promise<{q? : string
                     </table>
                 </div>
 
-               
+                {/* Pagination */}
+                {totalPages > 1 && (
+                    <div className="bg-white rounded-lg border border-gray-200 p-6">
+                        <Pagination 
+                            currentPage={page}
+                            totalPages={totalPages}
+                            baseUrl="/inventory"
+                            searchParams={{
+                                q,
+                                pageSize: String(pageSize),
+                            }}
+                        />
+                    </div>
+                )}
             </div>
 
         </main>
