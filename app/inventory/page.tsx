@@ -5,11 +5,37 @@ import { prisma } from "@/lib/prisma";
 
 
 
-const InventoryPage = async () => {
+const InventoryPage = async ({searchParams}: {searchParams: Promise<{q? : string}>}) => {
 
     const user = await getCurrentUser();
     const userId = user.id;
-    const totalProducts = await prisma.product.findMany({where: {userId}});
+
+    // Get search query
+    const params = await searchParams;
+    const q = (params.q ?? "").trim();
+
+
+    const where = {
+        userId,
+        ...(q ? {name: {
+            contains: q, 
+            mode: "insensitive" as const} // Case-insensitive search for better UX
+        } : {})
+    }
+
+    // const totalProducts = await prisma.product.findMany({
+    //     where,
+    // });
+
+    const [totalCount, itmes] = await Promise.all([
+        prisma.product.count({where}),
+        prisma.product.findMany({
+            where,
+        }),
+    ]);
+
+    const pageSize = 10;
+    const totalPages = Math.max(1, Math.ceil(totalCount/pageSize))
 
   return (
     <div className="min-h-screen bg-gray-50 text-black">
@@ -28,6 +54,15 @@ const InventoryPage = async () => {
             {/* Content */}
             <div className="space-y-6">
 
+                {/* Search */}
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                    <form action="/inventory" method="GET" className="flex gap-2">
+                        <input type="search" name="q" placeholder="Search products..." className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:border-transparent" />
+                        <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 cursor-pointer">
+                            Search
+                        </button>
+                    </form>
+                </div>
 
                 {/* Products table */}
                 <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -43,7 +78,7 @@ const InventoryPage = async () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {totalProducts.map((product, i) => (
+                            {itmes.map((product, i) => (
                                 <tr key={i} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.name}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.sku || "-"}</td>
@@ -64,6 +99,8 @@ const InventoryPage = async () => {
                         </tbody>
                     </table>
                 </div>
+
+               
             </div>
 
         </main>
