@@ -3,8 +3,6 @@
 
 export default function Home() {
 
-  // throw new Error("Testing error page");
-
   return (
     <div className="relative flex items-center justify-center min-h-screen overflow-hidden text-white bg-gradient-to-br from-gray-950 via-gray-900 to-black font-sans">
 
