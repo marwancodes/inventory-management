@@ -2,6 +2,9 @@
 
 
 export default function Home() {
+
+  // throw new Error("Testing error page");
+
   return (
     <div className="relative flex items-center justify-center min-h-screen overflow-hidden text-white bg-gradient-to-br from-gray-950 via-gray-900 to-black font-sans">
 
@@ -32,10 +35,10 @@ export default function Home() {
             Sign In
           </a>
 
-          <a href="#"
+          <a href="/dashboard"
             className="rounded-md font-semibold border border-indigo-500 px-4 py-2 text-white hover:bg-indigo-500/20"
           >
-            Learn More
+            Dashboard
           </a>
         </div>
       </main>
