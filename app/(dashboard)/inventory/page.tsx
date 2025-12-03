@@ -7,8 +7,23 @@ import { prisma } from "@/lib/prisma";
 
 const InventoryPage = async ({searchParams}: {searchParams: Promise<{q? : string; page?: string}>}) => {
 
-    const user = await getCurrentUser();
+    let user;
+    try {
+        user = await getCurrentUser();
+    } catch (err) {
+        user = null;
+    }
+
+    if (!user) {
+        return (
+            <div className="min-h-screen flex items-center justify-center text-gray-500">
+            You must be signed in to view this page.
+            </div>
+        );
+    }
+
     const userId = user.id;
+
 
     // Get search query
     const params = await searchParams;
